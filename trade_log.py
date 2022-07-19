@@ -3,18 +3,35 @@ import yfinance as yf
 from excel_helpers import *
 
 
-def process_trade_log(workbook):
+def update_trade_log_share_prices(workbook):
+    print("Updating Trade Log open trade prices...")
+    ws = get_worksheet(workbook, 'Trades Log')
+    for row in ws.iter_rows(min_row=2):
+        stock_symbol = row[2].value
+        unrealized_profit_loss = row[22].value
+
+        if stock_symbol is None:
+            continue
+        if unrealized_profit_loss is None:
+            continue
+
+        print("Working on: " + stock_symbol)
+        last_price = yf.Ticker(stock_symbol).info["regularMarketPrice"]
+        row[21].value = last_price
+
+
+def update_trade_log_max_profit_loss(workbook):
+    print("Updating Trade Log open trade max profit/loss...")
     ws = get_worksheet(workbook, 'Trades Log')
     for row in ws.iter_rows(min_row=2):
         stock_symbol = row[2].value
         entry_price = row[4].value
         start_date = row[3].value
         end_date = row[14].value
-        max_drawdown = row[17].value
-        max_profit = row[18].value
+        unrealized_profit_loss = row[22].value
         if stock_symbol is None:
             continue
-        if max_drawdown is not None and max_profit is not None:
+        if unrealized_profit_loss is None:
             continue
 
         print("Working on: " + stock_symbol + " " + str(start_date) + "  --->  " + str(end_date))
