@@ -1,13 +1,11 @@
+from worksheet import WorkSheet
 import math
 import yfinance as yf
-from excel_helpers import *
 
 
-class TradeLog:
+class TradesLogWS(WorkSheet):
     def __init__(self, workbook):
-        self.workbook = workbook
-        self.wsName = "Trades Log"
-        self.worksheet = get_worksheet(self.workbook, self.wsName)
+        WorkSheet.__init__(self, workbook, "Trades Log")
 
     def update_share_prices(self):
         print("Updating Trade Log open trade prices...")
